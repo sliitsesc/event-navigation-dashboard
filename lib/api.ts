@@ -1,7 +1,7 @@
 import type { User, Zone, Stall, ApiResponse, CreateZoneData, CreateStallData } from "@/types"
 
 class ApiClient {
-  private baseURL = "https://beads-draw-everybody-possibly.trycloudflare.com"
+  private baseURL = "https://34.121.251.7"
 
   private async request<T>(endpoint: string, options: RequestInit = {}): Promise<ApiResponse<T>> {
     const user = this.getStoredUser()
