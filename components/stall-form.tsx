@@ -1,23 +1,29 @@
-"use client"
+"use client";
 
-import type React from "react"
+import type React from "react";
 
-import { useState } from "react"
-import type { Stall, CreateStallData, StallCategory } from "@/types"
-import { api } from "@/lib/api"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Alert, AlertDescription } from "@/components/ui/alert"
-import { Loader2 } from "lucide-react"
+import { useState } from "react";
+import type { Stall, CreateStallData, StallCategory } from "@/types";
+import { api } from "@/lib/api";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Loader2 } from "lucide-react";
 
 interface StallFormProps {
-  stall?: Stall
-  zoneId: number
-  onSuccess: () => void
-  onCancel: () => void
+  stall?: Stall;
+  zoneId: number;
+  onSuccess: () => void;
+  onCancel: () => void;
 }
 
 const STALL_CATEGORIES: StallCategory[] = [
@@ -32,9 +38,14 @@ const STALL_CATEGORIES: StallCategory[] = [
   "TECHNOLOGY",
   "EDUCATION",
   "RETAIL",
-]
+];
 
-export function StallForm({ stall, zoneId, onSuccess, onCancel }: StallFormProps) {
+export function StallForm({
+  stall,
+  zoneId,
+  onSuccess,
+  onCancel,
+}: StallFormProps) {
   const [formData, setFormData] = useState<CreateStallData>({
     name: stall?.name || "",
     description: stall?.description || "",
@@ -43,28 +54,29 @@ export function StallForm({ stall, zoneId, onSuccess, onCancel }: StallFormProps
     floorNumber: stall?.floorNumber || 1,
     location: stall?.location || "",
     image: stall?.image || "",
-  })
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState("")
+    qrCode: stall?.qrCode || "",
+  });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setLoading(true)
-    setError("")
+    e.preventDefault();
+    setLoading(true);
+    setError("");
 
     try {
       if (stall?.id) {
-        await api.updateStall(stall.id, formData)
+        await api.updateStall(stall.id, formData);
       } else {
-        await api.createStall(zoneId, formData)
+        await api.createStall(zoneId, formData);
       }
-      onSuccess()
+      onSuccess();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "An error occurred")
+      setError(err instanceof Error ? err.message : "An error occurred");
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
@@ -84,7 +96,9 @@ export function StallForm({ stall, zoneId, onSuccess, onCancel }: StallFormProps
         <Input
           id="organizer"
           value={formData.organizer}
-          onChange={(e) => setFormData({ ...formData, organizer: e.target.value })}
+          onChange={(e) =>
+            setFormData({ ...formData, organizer: e.target.value })
+          }
           placeholder="Enter organizer name"
           required
         />
@@ -94,8 +108,9 @@ export function StallForm({ stall, zoneId, onSuccess, onCancel }: StallFormProps
         <Label htmlFor="category">Category *</Label>
         <Select
           value={formData.category}
-          onValueChange={(value: StallCategory) => setFormData({ ...formData, category: value })}
-        >
+          onValueChange={(value: StallCategory) =>
+            setFormData({ ...formData, category: value })
+          }>
           <SelectTrigger>
             <SelectValue placeholder="Select category" />
           </SelectTrigger>
@@ -117,7 +132,12 @@ export function StallForm({ stall, zoneId, onSuccess, onCancel }: StallFormProps
             type="number"
             min="1"
             value={formData.floorNumber}
-            onChange={(e) => setFormData({ ...formData, floorNumber: Number.parseInt(e.target.value) || 1 })}
+            onChange={(e) =>
+              setFormData({
+                ...formData,
+                floorNumber: Number.parseInt(e.target.value) || 1,
+              })
+            }
             required
           />
         </div>
@@ -127,7 +147,9 @@ export function StallForm({ stall, zoneId, onSuccess, onCancel }: StallFormProps
           <Input
             id="location"
             value={formData.location}
-            onChange={(e) => setFormData({ ...formData, location: e.target.value })}
+            onChange={(e) =>
+              setFormData({ ...formData, location: e.target.value })
+            }
             placeholder="e.g., Hall A-12"
             required
           />
@@ -139,7 +161,9 @@ export function StallForm({ stall, zoneId, onSuccess, onCancel }: StallFormProps
         <Textarea
           id="description"
           value={formData.description}
-          onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+          onChange={(e) =>
+            setFormData({ ...formData, description: e.target.value })
+          }
           placeholder="Enter stall description"
           rows={3}
         />
@@ -153,6 +177,16 @@ export function StallForm({ stall, zoneId, onSuccess, onCancel }: StallFormProps
           value={formData.image}
           onChange={(e) => setFormData({ ...formData, image: e.target.value })}
           placeholder="https://example.com/image.jpg"
+        />
+      </div>
+
+      <div className="space-y-2">
+        <Label htmlFor="qrCode">QR Code ID</Label>
+        <Input
+          id="qrCode"
+          value={formData.qrCode}
+          onChange={(e) => setFormData({ ...formData, qrCode: e.target.value })}
+          placeholder="Enter QR code identifier"
         />
       </div>
 
@@ -172,5 +206,5 @@ export function StallForm({ stall, zoneId, onSuccess, onCancel }: StallFormProps
         </Button>
       </div>
     </form>
-  )
+  );
 }

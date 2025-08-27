@@ -1,11 +1,23 @@
-import type { User, Zone, Stall, ApiResponse, CreateZoneData, CreateStallData } from "@/types"
+import type {
+  User,
+  Zone,
+  Stall,
+  ApiResponse,
+  CreateZoneData,
+  CreateStallData,
+} from "@/types";
 
 class ApiClient {
-  private baseURL = "https://thurstan-api.matterofcode.dev"
+  private baseURL =
+    process.env.NEXT_PUBLIC_API_BASE_URL ||
+    "https://thurstan-api.matterofcode.dev";
 
-  private async request<T>(endpoint: string, options: RequestInit = {}): Promise<ApiResponse<T>> {
-    const user = this.getStoredUser()
-    const token = user?.accessToken
+  private async request<T>(
+    endpoint: string,
+    options: RequestInit = {}
+  ): Promise<ApiResponse<T>> {
+    const user = this.getStoredUser();
+    const token = user?.accessToken;
 
     const response = await fetch(`${this.baseURL}${endpoint}`, {
       headers: {
@@ -14,21 +26,21 @@ class ApiClient {
         ...options.headers,
       },
       ...options,
-    })
+    });
 
-    const data = await response.json()
+    const data = await response.json();
 
     if (!response.ok) {
-      throw new Error(data.results[0].message || "API request failed")
+      throw new Error(data.results[0].message || "API request failed");
     }
 
-    return data
+    return data;
   }
 
   private getStoredUser(): User | null {
-    if (typeof window === "undefined") return null
-    const stored = localStorage.getItem("admin_user")
-    return stored ? JSON.parse(stored) : null
+    if (typeof window === "undefined") return null;
+    const stored = localStorage.getItem("admin_user");
+    return stored ? JSON.parse(stored) : null;
   }
 
   // Auth
@@ -36,58 +48,67 @@ class ApiClient {
     return this.request<User>("/v1/auth/sign-in", {
       method: "POST",
       body: JSON.stringify({ email, password }),
-    })
+    });
   }
 
   // Zones
   async getZones(): Promise<ApiResponse<Zone>> {
-    return this.request<Zone>("/v1/exhibition/zones")
+    return this.request<Zone>("/v1/exhibition/zones");
   }
 
   async createZone(zoneData: CreateZoneData): Promise<ApiResponse<Zone>> {
     return this.request<Zone>("/v1/admin/zone", {
       method: "POST",
       body: JSON.stringify(zoneData),
-    })
+    });
   }
 
-  async updateZone(id: number, zoneData: CreateZoneData): Promise<ApiResponse<Zone>> {
+  async updateZone(
+    id: number,
+    zoneData: CreateZoneData
+  ): Promise<ApiResponse<Zone>> {
     return this.request<Zone>(`/v1/admin/zone/${id}`, {
       method: "PATCH",
       body: JSON.stringify(zoneData),
-    })
+    });
   }
 
   async deleteZone(id: number): Promise<ApiResponse<Zone>> {
     return this.request<Zone>(`/v1/admin/zone/${id}`, {
       method: "DELETE",
-    })
+    });
   }
 
   // Stalls
   async getStalls(zoneId: number): Promise<ApiResponse<Stall>> {
-    return this.request<Stall>(`/v1/exhibition/stalls/zone/${zoneId}`)
+    return this.request<Stall>(`/v1/exhibition/stalls/zone/${zoneId}`);
   }
 
-  async createStall(zoneId: number, stallData: CreateStallData): Promise<ApiResponse<Stall>> {
+  async createStall(
+    zoneId: number,
+    stallData: CreateStallData
+  ): Promise<ApiResponse<Stall>> {
     return this.request<Stall>(`/v1/admin/zone/${zoneId}/stall`, {
       method: "POST",
       body: JSON.stringify(stallData),
-    })
+    });
   }
 
-  async updateStall(stallId: number, stallData: CreateStallData): Promise<ApiResponse<Stall>> {
+  async updateStall(
+    stallId: number,
+    stallData: CreateStallData
+  ): Promise<ApiResponse<Stall>> {
     return this.request<Stall>(`/v1/admin/stall/${stallId}`, {
       method: "PATCH",
       body: JSON.stringify(stallData),
-    })
+    });
   }
 
   async deleteStall(stallId: number): Promise<ApiResponse<Stall>> {
     return this.request<Stall>(`/v1/admin/stall/${stallId}`, {
       method: "DELETE",
-    })
+    });
   }
 }
 
-export const api = new ApiClient()
+export const api = new ApiClient();
