@@ -1,7 +1,7 @@
 import type { User, Zone, Stall, ApiResponse, CreateZoneData, CreateStallData } from "@/types"
 
 class ApiClient {
-  private baseURL = "https://human-preventing-antarctica-warner.trycloudflare.com"
+  private baseURL = "https://thurstan-api.matterofcode.dev"
 
   private async request<T>(endpoint: string, options: RequestInit = {}): Promise<ApiResponse<T>> {
     const user = this.getStoredUser()
