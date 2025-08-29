@@ -11,6 +11,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Loader2 } from "lucide-react";
+import { ImageUpload } from "@/components/ui/image-upload";
 
 interface ZoneFormProps {
   zone?: Zone;
@@ -77,15 +78,10 @@ export function ZoneForm({ zone, onSuccess, onCancel }: ZoneFormProps) {
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="imageUrl">Image URL</Label>
-        <Input
-          id="imageUrl"
-          type="url"
+        <ImageUpload
           value={formData.imageUrl}
-          onChange={(e) =>
-            setFormData({ ...formData, imageUrl: e.target.value })
-          }
-          placeholder="https://example.com/image.jpg"
+          onChange={(url) => setFormData({ ...formData, imageUrl: url })}
+          label="Zone Image"
         />
       </div>
 

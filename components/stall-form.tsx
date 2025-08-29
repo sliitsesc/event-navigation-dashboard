@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/select";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Loader2 } from "lucide-react";
+import { ImageUpload } from "@/components/ui/image-upload";
 
 interface StallFormProps {
   stall?: Stall;
@@ -170,13 +171,10 @@ export function StallForm({
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="image">Image URL</Label>
-        <Input
-          id="image"
-          type="url"
+        <ImageUpload
           value={formData.image}
-          onChange={(e) => setFormData({ ...formData, image: e.target.value })}
-          placeholder="https://example.com/image.jpg"
+          onChange={(url) => setFormData({ ...formData, image: url })}
+          label="Stall Image"
         />
       </div>
 

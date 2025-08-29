@@ -2,19 +2,68 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 
 ## Getting Started
 
-First, run the development server:
+First, install dependencies:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
+pnpm install
+```
+
+### Environment Setup
+
+1. Copy `.env.example` to `.env.local`:
+
+```bash
+cp .env.example .env.local
+```
+
+2. **Set up UploadThing** (Required for image uploads):
+   - Sign up at [UploadThing Dashboard](https://uploadthing.com/dashboard)
+   - Create a new app and get your API token
+   - Replace `your_uploadthing_token_here` in `.env.local` with your actual UploadThing token:
+   ```bash
+   UPLOADTHING_TOKEN=sk_live_...
+   ```
+
+### Running the Development Server
+
+```bash
 pnpm dev
-# or
-bun dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+
+## Features
+
+### Image Upload
+
+This application includes image upload functionality using UploadThing for:
+
+- **Stall Images**: Upload images when creating or editing stalls
+- **Zone Images**: Upload images when creating or editing zones
+
+The image upload component supports:
+
+- Drag & drop file upload
+- Direct URL input
+- Image preview
+- File validation (images only, max 4MB)
+- Integration with UploadThing cloud storage
+
+## Project Structure
+
+```
+app/
+├── api/uploadthing/     # UploadThing API routes
+│   ├── core.ts         # File router configuration
+│   └── route.ts        # API route handler
+components/
+├── ui/
+│   └── image-upload.tsx # Custom image upload component
+└── ...                 # Other components
+lib/
+├── uploadthing.ts      # UploadThing utilities
+└── ...                 # Other utilities
+```
 
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
